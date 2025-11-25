@@ -1,4 +1,4 @@
-package com.example.lab01.model.enums;
+package com.example.lab01.model.enumerations;
 
 public enum BookCategory {
     NOVEL,

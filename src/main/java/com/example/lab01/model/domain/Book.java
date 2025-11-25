@@ -1,6 +1,6 @@
-package com.example.lab01.model;
+package com.example.lab01.model.domain;
 
-import com.example.lab01.model.enums.BookCategory;
+import com.example.lab01.model.enumerations.BookCategory;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
