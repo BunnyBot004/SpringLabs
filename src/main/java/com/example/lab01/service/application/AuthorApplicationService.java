@@ -4,6 +4,7 @@ import com.example.lab01.dto.AuthorDto;
 import com.example.lab01.dto.CountryDto;
 import com.example.lab01.dto.CreateAuthorDto;
 import com.example.lab01.model.domain.Author;
+import com.example.lab01.projection.AuthorNameProjection;
 import com.example.lab01.service.domain.AuthorDomainService;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +53,10 @@ public class AuthorApplicationService {
 
     public void deleteById(Long id) {
         authorDomainService.deleteById(id);
+    }
+
+    public List<AuthorNameProjection> findAllNames() {
+        return authorDomainService.findAllNames();
     }
 
     private AuthorDto toDto(Author author) {

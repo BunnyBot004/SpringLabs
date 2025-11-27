@@ -2,6 +2,9 @@ package com.example.lab01.web.controller;
 
 import com.example.lab01.dto.AuthorDto;
 import com.example.lab01.dto.CreateAuthorDto;
+import com.example.lab01.model.views.AuthorsPerCountryView;
+import com.example.lab01.projection.AuthorNameProjection;
+import com.example.lab01.repository.AuthorsPerCountryViewRepository;
 import com.example.lab01.service.application.AuthorApplicationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,9 +21,12 @@ import java.util.List;
 public class AuthorController {
 
     private final AuthorApplicationService authorApplicationService;
+    private final AuthorsPerCountryViewRepository authorsPerCountryViewRepository;
 
-    public AuthorController(AuthorApplicationService authorApplicationService) {
+    public AuthorController(AuthorApplicationService authorApplicationService,
+                            AuthorsPerCountryViewRepository authorsPerCountryViewRepository) {
         this.authorApplicationService = authorApplicationService;
+        this.authorsPerCountryViewRepository = authorsPerCountryViewRepository;
     }
 
     @GetMapping
@@ -71,5 +77,19 @@ public class AuthorController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/by-country")
+    @Operation(summary = "Get authors count by country", description = "Returns the number of authors per country from materialized view (refreshed on author events)")
+    public ResponseEntity<List<AuthorsPerCountryView>> getAuthorsByCountry() {
+        List<AuthorsPerCountryView> stats = authorsPerCountryViewRepository.findAll();
+        return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/names")
+    @Operation(summary = "Get author names", description = "Returns only the name and surname of each author using Spring Data projections")
+    public ResponseEntity<List<AuthorNameProjection>> getAuthorNames() {
+        List<AuthorNameProjection> names = authorApplicationService.findAllNames();
+        return ResponseEntity.ok(names);
     }
 }

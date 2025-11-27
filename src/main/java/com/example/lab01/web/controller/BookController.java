@@ -2,6 +2,8 @@ package com.example.lab01.web.controller;
 
 import com.example.lab01.dto.BookDto;
 import com.example.lab01.dto.CreateBookDto;
+import com.example.lab01.model.views.BooksPerAuthorView;
+import com.example.lab01.repository.BooksPerAuthorViewRepository;
 import com.example.lab01.service.application.BookApplicationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,9 +20,12 @@ import java.util.List;
 public class BookController {
 
     private final BookApplicationService bookApplicationService;
+    private final BooksPerAuthorViewRepository booksPerAuthorViewRepository;
 
-    public BookController(BookApplicationService bookApplicationService) {
+    public BookController(BookApplicationService bookApplicationService,
+                          BooksPerAuthorViewRepository booksPerAuthorViewRepository) {
         this.bookApplicationService = bookApplicationService;
+        this.booksPerAuthorViewRepository = booksPerAuthorViewRepository;
     }
 
     @GetMapping
@@ -87,5 +92,12 @@ public class BookController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping("/by-author")
+    @Operation(summary = "Get books count by author", description = "Returns the number of books per author from materialized view (refreshed hourly)")
+    public ResponseEntity<List<BooksPerAuthorView>> getBooksByAuthor() {
+        List<BooksPerAuthorView> stats = booksPerAuthorViewRepository.findAll();
+        return ResponseEntity.ok(stats);
     }
 }
